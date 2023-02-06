@@ -1,0 +1,70 @@
+# Project information
+site_name: CSV Table Schema
+site_description: 'Documentation for CSV Table Schema'
+site_author: 'STÜBER SYSTEMS GmbH'
+site_url: 'https://openpotato.github.io/csv-table-schema/'
+
+# Copyright
+copyright:
+  '&copy; 2023 STÜBER SYSTEMS GmbH : <a href="https://legal.stueber.co.uk/imprint.php">Imprint</a> : <a href="https://legal.stueber.co.uk/privacy.php">Privacy</a>'
+
+# Repository
+repo_name: 'On GitHub'
+repo_url: 'https://github.com/openpotato/csv-table-schema'
+
+# Theming
+theme: 
+  name: material
+  language: en
+  features:
+      - navigation.instant
+  palette:
+    - scheme: default
+      primary: 'indigo'
+      accent: 'amber'
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: 'indigo'
+      accent: 'amber'
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font: false
+  favicon: 'assets/logos/favicon.ico'
+  logo: 'assets/logos/logo.svg'
+  include_search_page: false
+  search_index_only: true
+  static_templates:
+    - 404.html
+
+# Customization
+extra_css:
+  - assets/css/custom.css
+    
+# Social media & multi language
+extra:
+  social:
+    - icon: fontawesome/brands/mastodon 
+      link: https://fosstodon.org/@openpotato
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/openpotatis
+
+# Plugins
+plugins:
+    - search
+    - minify:
+        minify_html: true
+
+# Extensions    
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+# Navigation  
+nav:
+- Introduction: index.md
+- Specification: specification.md
