@@ -22,6 +22,11 @@
         "description": "Long name of subject",
         "type": "string"
       }
+    ],
+    "unqiueKeys": [
+      [
+        "Id"
+      ]
     ]
   }
 }

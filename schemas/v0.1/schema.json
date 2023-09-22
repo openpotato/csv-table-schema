@@ -1,9 +1,9 @@
 ﻿{
-  "$id": "https://github.com/openpotato/csv-table-schema/blob/main/spec/csv-table-schema.json",
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "$comment": "v-0.0.3",
+  "$id": "https://github.com/openpotato/csv-table-schema/main/schemas/v0.1/schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "v-0.0.4",
   "title": "JSON CSV Table Schema Specification",
-  "description": "CSV Table Schema Specification based on JSON Schema",
+  "description": "CSV Table Schema Specification v-0.0.x based on JSON Schema",
   "type": "object",
   "required": [
     "title"
@@ -67,6 +67,7 @@
         "columns": {
           "type": "array",
           "description": "A list of CSV columns.",
+          "unqiueItems": true,
           "minItems": 1,
           "items": {
             "type": "object",
@@ -124,7 +125,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is an enumeration type column.",
@@ -182,7 +184,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is an enumeration set type column. The set of values is formatted as csv string.",
@@ -254,7 +257,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a integer type column.",
@@ -298,7 +302,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a float type column.",
@@ -350,7 +355,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a boolean type column.",
@@ -402,7 +408,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a date only type column.",
@@ -454,7 +461,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a time only type column.",
@@ -558,7 +566,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a json formatted string type column.",
@@ -609,7 +618,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a xml formatted string type column.",
@@ -660,12 +670,34 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               }
             ]
           }
+        },
+        "unqiueKeys": {
+          "type": "array",
+          "description": "An array of unique key definitions.",
+          "unqiueItems": true,
+          "minItems": 1,
+          "items": [
+            {
+              "type": "array",
+              "description": "An array of column names as unique key definition",
+              "unqiueItems": true,
+              "minItems": 1,
+              "items": [
+                {
+                  "type": "string",
+                  "description": "Name of column."
+                }
+              ]
+            }
+          ]
         }
-      }
+      },
+      "additionalProperties": false
     },
     "dictionary": {
       "type": "object",
@@ -699,6 +731,7 @@
         "keys": {
           "type": "array",
           "description": "A list of dictionary keys.",
+          "unqiueItems": true,
           "minItems": 1,
           "items": {
             "type": "object",
@@ -756,7 +789,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is an enumeration type key.",
@@ -814,7 +848,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is an enumeration set type key. The set of values is formatted as csv string.",
@@ -886,7 +921,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a integer type key.",
@@ -930,7 +966,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a float type key.",
@@ -982,7 +1019,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a boolean type key.",
@@ -1034,7 +1072,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a date only type key.",
@@ -1086,7 +1125,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a time only type key.",
@@ -1138,7 +1178,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a date-time type key.",
@@ -1190,7 +1231,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a json formatted string type key.",
@@ -1241,7 +1283,8 @@
                     "description": "A string that specifies a regular expression that must mach against each value.",
                     "format": "regex"
                   }
-                }
+                },
+                "additionalProperties": false
               },
               {
                 "description": "This is a xml formatted string type key.",
@@ -1297,7 +1340,8 @@
             ]
           }
         }
-      }
+      },
+      "additionalProperties": false
     }
   },
   "oneOf": [
@@ -1313,5 +1357,6 @@
         "dictionary"
       ]
     }
-  ]
+  ],
+  "additionalProperties": false
 }

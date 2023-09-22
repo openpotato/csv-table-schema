@@ -26,6 +26,11 @@
           "yyyy-MM-dd"
         ]
       }
+    ],
+    "unqiueKeys": [
+      [
+        "Id"
+      ]
     ]
   }
 }

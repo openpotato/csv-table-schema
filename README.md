@@ -4,17 +4,17 @@ CSV Table Schema is a pragmatic approach for defining [CSV](https://datatracker.
 
 Main features:
 
-+ Easy schema definiton via JSON which can be validated against the [CSV Table Meta Schema](https://github.com/openpotato/csv-table-schema/blob/main/spec/csv-table-schema.json).
++ Easy schema definiton via JSON which can be validated against the [CSV Table Meta Schema](https://github.com/openpotato/csv-table-schema/tree/main/schemas/v0.1/schema.json).
 + Dedicated to the CSV format.
 + Supports the following data types: string, enum, enum-set, bool, int, float, date, time, date-time, json and xml.
 + Supports CSV tables with ordered and unordered columns.
 + Supports CSV tables with or without header row.
 + Supports CSV dictionaries with key/value rows.
++ Supports unique key definitions for CSV tables
 
 ## Documentation
 
-The documentation website is part of this repository. We have implemented 
-it using [MkDocs](https://www.mkdocs.org) and [Material for MkDocs](https://squidfunk.github.io/mkdocs-material). It is published under https://openpotato.github.io/csv-table-schema/.
+The documentation website is part of this repository. We have implemented it using [MkDocs](https://www.mkdocs.org) and [Material for MkDocs](https://squidfunk.github.io/mkdocs-material). It is published under https://openpotato.github.io/csv-table-schema/.
 
 ## Can I help?
 

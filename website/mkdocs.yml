@@ -64,12 +64,23 @@ plugins:
 
 # Extensions    
 markdown_extensions:
+  - def_list
   - admonition
+  - attr_list
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
   - pymdownx.superfences
-  - pymdownx.tabbed:
-      alternate_style: true
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 
 # Navigation  
 nav:
 - Introduction: index.md
 - Specification: specification.md
+- Change Log: change-log.md
