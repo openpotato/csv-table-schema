@@ -1,39 +1,65 @@
-A CSV Table Schema document is a JSON document which can be validated against the [CSV Table Meta Schema](https://github.com/openpotato/csv-table-schema/blob/main/spec/csv-table-schema.json). 
+# CSV Table Schema Specification
+
+#### Version 0.0.5
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC2119 and RFC8174](https://tools.ietf.org/html/bcp14) when, and only when, they appear in all capitals, as shown here.
+
+This document is licensed under [Apache License, Version 2.0](https://opensource.org/license/apache-2-0/).
+
+## Introduction
+
+CSV Table Schema defines a standard for describing [CSV](https://datatracker.ietf.org/doc/html/rfc4180) schemas. CSV Table Schema can be used to document CSV data structures and to validate data against a given documentation.
+
+## Specification
+
+### Versioning
+
+The CSV Table Schema specification is versioned according to the scheme `major.minor.patch`. The major-minor part of the version number (e.g. `0.1`) SHALL denote the feature set of the specification. Patch versions address errors in or provide clarifications to this document, not the feature set. Tools supporting CSV Table Schema in version `0.1` SHALL be compatible with all `0.1.*` versions of CSV Table Schema. The patch version SHOULD NOT be taken into account by the tools, so that for example no difference is made between `0.1.0` and `0.1.1`.
+
+### Format
+
+An CSV Table Schema document that conforms to the CSV Table Schema specification is itself a JSON object that can be represented in JSON format.
+
+All field names in the specification are case sensitive. 
+
+### Schema
+
+A CSV Table Schema document is a JSON document which can be validated against the [CSV Table Meta Schema](https://github.com/openpotato/csv-table-schema/tree/main/schemas/v0.1/schema.json). 
 
 It consists of a JSON object with following properties:
 
-+ `title` : A title for the CSV Schema. **This property is required**.
++ `title` : A title for the CSV Schema. **This property is REQUIRED**.
 + `description` : An optional description for the CSV Schema.
-+ Two mutually exclusive properties. **One of them is is required**.
++ Two mutually exclusive properties. **One of them is is REQUIRED**.
     + `table` : A table object. 
     + `dictionary` : A dictionary object. 
 
-## Tables
+### Tables
 
 A CSV table is a text file. Each line of the file is a data record. Each record consists of one or more fields, separated by a delimiter. Every record has the same sequence of fields. The first line of a CSV table can be defined as header row, representing the names of the columns.
 
-### Table 
+#### Table 
 
 A table is a JSON object with following properties:
 
-+ `name` : Defines the name of the CSV table. **This property is required**.
++ `name` : Defines the name of the CSV table. **This property is REQUIRED**.
 + `description` : An optional description of the table.
-+ `type` : Specifies the table type. **This property is required**. Possible values are:
++ `type` : Specifies the table type. **This property is REQUIRED**. Possible values are:
     + `ordered` : A table with columns appearing in defined order.
     + `unordered` : A table with columns appearing in any order.
     + `headless` : A table with no header row. Columns must appear in defined order.
 + `delimiterChar` : Defines the delimiter character of the CSV format. Default value is `,`.
 + `quoteChar` : Defines the quote character of the CSV format. Default value is `"`.
 + `additionalColumns` : If `true` additional non-specified columns within the CSV document are allowed. Default value is `false`.
-+ `columns` : An array of column definitions. **This property is required**.
++ `columns` : An array of column definitions. **This property is REQUIRED**.
 
-### Columns
+#### Columns
 
 The `columns` array describes all columns within a CSV table. A column is a JSON object with following properties:
 
-+ `name` : The name of the column. **This property is required**.
++ `name` : The name of the column. **This property is REQUIRED**.
 + `description` : An optional description of the column.
-+ `type` : The data type of the column. **This property is required**. Possible values are:
++ `type` : The data type of the column. **This property is REQUIRED**. Possible values are:
     + `string`
     + `int`
     + `float`
@@ -49,6 +75,10 @@ The `columns` array describes all columns within a CSV table. A column is a JSON
 + `nullable` : If `true` values of this column can be empty. Default value is `false`.
 + `pattern` : An optional regular expression which must always match with values of the column.
 
+#### Unqiue keys
+
+The `unqiueKeys` array describes unique keys within a CSV table. A unique key is itself a JSON array with column names representing exting column. Each column name is a `string` value.
+
 ### About optional columns
 
 If the table type is:
@@ -56,27 +86,27 @@ If the table type is:
 + `ordered`, a column with `optional=true` marks an optional column. If the column is missing in the table all other columns must still apear in defined order. 
 + `headless`, a column with `optional=true` marks the start of the optional column range. If the column is missing in the table all columns after this column are of course also missing. 
 
-## Dictionaries
+### Dictionaries
 
 A CSV dictionary is a collection of key/value pairs. It is a CSV table with exactly two columns, a key column and a value column. While the key column is always a string containing the key name, the value column can have different data types for each key.
 
-### Dictionary 
+#### Dictionary 
 
 A dictionary is a JSON object with following properties:
 
-+ `name` : Defines the name of the CSV dictionary. **This property is required**.
++ `name` : Defines the name of the CSV dictionary. **This property is REQUIRED**.
 + `description` : An optional description of the dictionary.
 + `delimiterChar` : Defines the delimiter character of the CSV format. Default value is `,`.
 + `quoteChar` : Defines the quote character of the CSV format. Default value is `"`.
-+ `keys` : An array of key definitions. **This property is required**.
++ `keys` : An array of key definitions. **This property is REQUIRED**.
 
-### Keys
+#### Keys
 
 The `keys` array describes all keys within a CSV dictionary. A key is a JSON object with following properties:
 
-+ `name` : The name of the key. **This property is required**.
++ `name` : The name of the key. **This property is REQUIRED**.
 + `description` : An optional description of the key.
-+ `type` : The data type of the key. **This property is required**. Possible values are:
++ `type` : The data type of the key. **This property is REQUIRED**. Possible values are:
     + `string`
     + `int`
     + `float`
@@ -92,7 +122,7 @@ The `keys` array describes all keys within a CSV dictionary. A key is a JSON obj
 + `nullable` : If `true` the value of this key can be empty. Default value is `false`.
 + `pattern` : An optional regular expression which must always match with the value of the key.
 
-## Data types
+### Data types
 
 A data type defines the type of value which is expected in a column or key. Based on the data type additional schema properties are available:
 
@@ -120,7 +150,7 @@ Represents an integral number. The following additional schema properties are av
 
 Represents a floating number. The following additional schema properties are available:
 
-+ `formats` : An array of valid format string according to [.NET Custom numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings). **This property is required**.
++ `formats` : An array of valid format string according to [.NET Custom numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings). **This property is REQUIRED**.
 + `minValue` : Specifies the minimum allowed value.
 + `maxValue` : Specifies the maximun allowed value.
 
@@ -128,20 +158,20 @@ Represents a floating number. The following additional schema properties are ava
 
 Represents a boolean value. The following additional schema properties are available:
 
-+ `trueValues` : An array of valid strings each representing a logical true value. **This property is required**.
-+ `falseValues` : An array of valid strings each representing a logical false value. **This property is required**.
++ `trueValues` : An array of valid strings each representing a logical true value. **This property is REQUIRED**.
++ `falseValues` : An array of valid strings each representing a logical false value. **This property is REQUIRED**.
 
 #### enum
 
 Represents an enumeration value. The following additional schema properties are available:
 
-+ `members` : An array of value objects each representing one enumeration value. **This property is required**.
++ `members` : An array of value objects each representing one enumeration value. **This property is REQUIRED**.
 
 #### enum-set
 
 Represents an set of enumeration values formatted as csv string. The following additional schema properties are available:
 
-+ `members` : An array of value objects each repesenting one enumeration value. **This property is required**.
++ `members` : An array of value objects each repesenting one enumeration value. **This property is REQUIRED**.
 + `delimiterChar` : Defines the delimiter character of the CSV string format. Default value is `,`.
 + `quoteChar` : Defines the quote character of the CSV string format. Default value is `"`.
 
@@ -149,7 +179,7 @@ Represents an set of enumeration values formatted as csv string. The following a
 
 Represents a datetime value. The following additional schema properties are available:
 
-+ `formats` : An array of valid format strings according to [.NET Custom date and time format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings). **This property is required**.
++ `formats` : An array of valid format strings according to [.NET Custom date and time format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings). **This property is REQUIRED**.
 + `minValue` : Specifies the minimum allowed value.
 + `maxValue` : Specifies the maximun allowed value.
 
@@ -157,7 +187,7 @@ Represents a datetime value. The following additional schema properties are avai
 
 Represents a date only value. The following additional schema properties are available:
 
-+ `formats` : An array of valid format strings according to [.NET Custom date and time format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings). **This property is required**.
++ `formats` : An array of valid format strings according to [.NET Custom date and time format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings). **This property is REQUIRED**.
 + `minValue` : Specifies the minimum allowed value.
 + `maxValue` : Specifies the maximun allowed value.
 
@@ -165,7 +195,7 @@ Represents a date only value. The following additional schema properties are ava
 
 Represents a time only value. The following additional schema properties are available:
 
-+ `formats` : An array of valid format strings according to [.NET Custom date and time format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings). **This property is required**.
++ `formats` : An array of valid format strings according to [.NET Custom date and time format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings). **This property is REQUIRED**.
 + `minValue` : Specifies the minimum allowed value.
 + `maxValue` : Specifies the maximun allowed value.
 
@@ -173,12 +203,12 @@ Represents a time only value. The following additional schema properties are ava
 
 Represents a json formatted string. The following additional schema properties are available:
 
-+ `schema` : Specifies a [JSON Schema](https://json-schema.org/draft/2020-12/json-schema-core.html). **This property is required**.
-    + `uri` : An uri to a valid JSON Schema. **This property is required**.
++ `schema` : Specifies a [JSON Schema](https://json-schema.org/draft/2020-12/json-schema-core.html). **This property is REQUIRED**.
+    + `uri` : An uri to a valid JSON Schema. **This property is REQUIRED**.
 
 #### xml
 
 Represents a xml formatted string. The following additional schema properties are available:
 
-+ `schema` : Specifies a [XML Schema](https://www.w3.org/TR/xmlschema-0/). **This property is required**.
-    + `uri` : An uri to a valid XML Schema. **This property is required**.
++ `schema` : Specifies a [XML Schema](https://www.w3.org/TR/xmlschema-0/). **This property is REQUIRED**.
+    + `uri` : An uri to a valid XML Schema. **This property is REQUIRED**.

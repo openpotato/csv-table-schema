@@ -56,13 +56,18 @@
       {
         "name": "CourseList",
         "description": "Array of course (see sample01b.scsv.json) references ",
-          "type": "json",
-          "schema": {
-            "uri": "json-id-array.json"
-          },
-          "optional": true,
-          "nullable": true
+        "type": "json",
+        "schema": {
+          "uri": "json-id-array.json"
+        },
+        "optional": true,
+        "nullable": true
       }
+    ],
+    "unqiueKeys": [
+      [
+        "Id"
+      ]
     ]
   }
 }
