@@ -1,7 +1,7 @@
 ﻿{
   "$id": "https://github.com/openpotato/csv-table-schema/main/schemas/v0.1/schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$comment": "v-0.0.4",
+  "$comment": "v-0.0.5",
   "title": "JSON CSV Table Schema Specification",
   "description": "CSV Table Schema Specification v-0.0.x based on JSON Schema",
   "type": "object",
