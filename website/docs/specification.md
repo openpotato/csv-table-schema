@@ -10,6 +10,71 @@ This document is licensed under [Apache License, Version 2.0](https://opensource
 
 CSV Table Schema defines a standard for describing [CSV](https://datatracker.ietf.org/doc/html/rfc4180) schemas. CSV Table Schema can be used to document CSV data structures and to validate data against a given documentation.
 
+### CSV
+
+CSV (Comma-Separated Values) is a widely used file format for storing and exchanging structured data in plain text. It is characterized by its simplicity, human-readability, and versatility. In CSV, data is organized in rows and columns, much like a spreadsheet or database table. Each row represents a single record or data entry, and each column contains an attribute or field. Values within a row are separated by a delimiter, most commonly a comma, but other delimiters like semicolons, tabs, or pipes can also be used based on specific requirements.
+
+Example of CSV Data:
+
+``` csv
+Name,Age,City
+John,30,Berlin
+Alice,25,London
+Bob,35,Paris
+```
+
+In the example above, we have a CSV file with three columns (Name, Age, and City) and three rows of data, each representing an individual.
+
+Variants of CSV:
+
++ **SSV (Semicolon-Separated Values)**: SSV (Semicolon-Separated Values), is a variant of CSV where semicolons (;) are used as delimiters instead of commas. This format is often used in regions where comma is used as a decimal separator in numeric values, reducing potential parsing conflicts (e.g. Germany). 
+
+    For example:
+
+    ``` csv
+    Name;Age,City
+    John;30;Berlin
+    Alice;25;London
+    Bob;35;Paris
+    ```
+
++ **TSV (Tab-Separated Values)**: TSV (Tab-Separated Values) uses tabs (or tab characters) as delimiters between values instead of commas. TSV is commonly employed in situations where data contains commas naturally, such as text descriptions or addresses. TSV files are especially prevalent in data interchange within the scientific and research communities. 
+
+    For example:
+
+    ``` csv
+    Name   Age  City
+    John   30   Berlin
+    Alice  25   London
+    Bob    35   Paris
+    ```
+
+### CSV Tables
+
+A CSV table, often referred to simply as a "CSV file," is a structured data file format that follows the principles of Comma-Separated Values (CSV). It is a way to represent tabular data, much like a spreadsheet or a database table, in plain text format. 
+
+In a CSV table:
+
++ **Rows:** Each line of the CSV file typically represents a row of data. Each row corresponds to a record, entity, or data entry, and it contains one or more values separated by a delimiter, most commonly a comma. Each row ends with a line break character, such as a newline ("\n") on Unix-based systems or a carriage return and newline ("\r\n") on Windows systems.
+
++ **Columns:** The values within each row are organized into columns, which represent different attributes or fields of the data. Columns are separated by the chosen delimiter, typically a comma, but semicolons, tabs, or other characters can also be used depending on specific requirements.
+
++ **Headers:** The first row is often interpreted as a header, with the value in each column storing the name of the column.
+
+### CSV Dictionaries
+
+A CSV dictionary refer to a CSV file used to store key-value pairs or dictionary-like data. In this context, each row in the CSV file would typically represent a key-value pair, with the key and value separated by a delimiter. Such files are sometimes used to store configuration data or simple databases where each row represents a record with attributes and values.
+
+For example, a CSV dictionary for storing configuration settings might look like this:
+
+``` csv
+ServerName,example.com
+Port,8080
+Timeout,30
+```
+
+In this CSV dictionary, there are two columns (Key and Value), and each row represents a configuration setting and its corresponding value.
+
 ## Specification
 
 ### Versioning
