@@ -1,23 +1,27 @@
 {
-  "version": "0.2",
+  "$schema": "https://schemahub.openpotato.org/csv-table-schema/v0.1/schema.json",
+  "version": "0.3",
   "title": "CSV Table Schema for courses",
   "description": "A sample CSV Table Schema for courses",
   "table": {
     "name": "Courses.csv",
     "type": "unordered",
+    "language": "en",
     "columns": [
       {
+        "code": "id",
         "name": "Id",
         "description": "Unique id",
-        "type": "string",
-        "format": "uuid"
+        "type": "string"
       },
       {
+        "code": "title",
         "name": "Title",
         "description": "Course title",
         "type": "string"
       },
       {
+        "code": "startDate",
         "name": "StartDate",
         "description": "Start date of the course",
         "type": "date-time",
@@ -26,6 +30,7 @@
         ]
       },
       {
+        "code": "endDate",
         "name": "EndDate",
         "description": "End date of the course",
         "type": "date-time",
@@ -34,15 +39,15 @@
         ]
       },
       {
+        "code": "subjectId",
         "name": "SubjectId",
         "description": "Reference to subject (see sample02c.csv-schema.json)",
-        "type": "string",
-        "format": "uuid"
+        "type": "string"
       }
     ],
-    "unqiueKeys": [
+    "uniqueKeys": [
       [
-        "Id"
+        "id"
       ]
     ]
   }

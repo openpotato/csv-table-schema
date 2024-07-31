@@ -1,6 +1,6 @@
 # CSV Table Schema Specification
 
-#### Version 0.0.5
+#### Version 0.1.0
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC2119 and RFC8174](https://tools.ietf.org/html/bcp14) when, and only when, they appear in all capitals, as shown here.
 
@@ -75,6 +75,21 @@ Timeout,30
 
 In this CSV dictionary, there are two columns (Key and Value), and each row represents a configuration setting and its corresponding value.
 
+### CSV Table Sets
+
+A CSV table set is a polymorphic table without a header row, in which each row can be different and is identified by a discriminator value.
+
+For example, a CSV polymorphic table for storing two different tables might look like this:
+
+``` csv
+r1,John,30,Berlin
+r1,Alice,25,London
+r2,Berlin,DE
+r2,London,UK
+```
+
+In this CSV table set, the first column is the discriminator. Possible values are `r1` and `r2`. Rows with `r1` contain three additional columns, rows with `r2` contain two additional columns.
+
 ## Specification
 
 ### Versioning
@@ -93,11 +108,17 @@ A CSV Table Schema document is a JSON document which can be validated against th
 
 It consists of a JSON object with following properties:
 
++ `$schema` : The used dialect of the CSV schema. Can be used to verify that the schema is valid.
++ `version` : The version of the CSV schema.
 + `title` : A title for the CSV Schema. **This property is REQUIRED**.
-+ `description` : An optional description for the CSV Schema.
-+ Two mutually exclusive properties. **One of them is is REQUIRED**.
++ `description` : An human-readable description for the CSV Schema.
++ `notes` : Additional human-readable notes for the CSV Schema.
++ Three mutually exclusive properties. **One of them is is REQUIRED**.
     + `table` : A table object. 
     + `dictionary` : A dictionary object. 
+    + `tableSet` : A table set object. 
+
+The object MAY be extended.
 
 ### Tables
 
@@ -108,27 +129,35 @@ A CSV table is a text file. Each line of the file is a data record. Each record 
 A table is a JSON object with following properties:
 
 + `name` : Defines the name of the CSV table. **This property is REQUIRED**.
-+ `description` : An optional description of the table.
++ `description` : An optional human-readable description of the table.
 + `type` : Specifies the table type. **This property is REQUIRED**. Possible values are:
     + `ordered` : A table with columns appearing in defined order.
     + `unordered` : A table with columns appearing in any order.
     + `headless` : A table with no header row. Columns must appear in defined order.
 + `delimiterChar` : Defines the delimiter character of the CSV format. Default value is `,`.
 + `quoteChar` : Defines the quote character of the CSV format. Default value is `"`.
++ `lineBreaks` : Defines the valid line breaking strings of the CSV format. Default value is `\r\n` and `\n`.
++ `skipFirstRows` : Defines the number of rows to skip at the beginning of the CSV file.
++ `skipEmptyRows` : Specifies whether empty rows should be ignored. Empty rows are rows in which each column has an empty value.
++ `language` : Defines the content language of the CSV format. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. Can be overriden by the language tag of a column.
 + `additionalColumns` : If `true` additional non-specified columns within the CSV document are allowed. Default value is `false`.
 + `columns` : An array of column definitions. **This property is REQUIRED**.
+
+This object MAY be extended.
 
 #### Columns
 
 The `columns` array describes all columns within a CSV table. A column is a JSON object with following properties:
 
-+ `name` : The name of the column. **This property is REQUIRED**.
-+ `description` : An optional description of the column.
++ `code` : The code of the column. **This property is REQUIRED**.
++ `name` : The human-readable name of the column.
++ `alternativeNames` : A list of alternative names of the column.
++ `description` : An human-readable description of the column.
 + `type` : The data type of the column. **This property is REQUIRED**. Possible values are:
     + `string`
-    + `int`
-    + `float`
-    + `bool`
+    + `integer`
+    + `numeric`
+    + `boolean`
     + `enum`
     + `enum-set`
     + `time`
@@ -138,13 +167,13 @@ The `columns` array describes all columns within a CSV table. A column is a JSON
     + `xml`
 + `optional` : If `true` the column must not be present in the CSV table. Default value is `false`. 
 + `nullable` : If `true` values of this column can be empty. Default value is `false`.
-+ `pattern` : An optional regular expression which must always match with values of the column.
++ `nullValues`: If `nullable=true` the list of values that represent the null state.
 
-#### Unqiue keys
+#### Unique keys
 
-The `unqiueKeys` array describes unique keys within a CSV table. A unique key is itself a JSON array with column names representing exting column. Each column name is a `string` value.
+The `uniqueKeys` array describes unique keys within a CSV table. A unique key is itself a JSON array with column codes representing an existing column. Each column code is a `string` value.
 
-### About optional columns
+#### About optional columns
 
 If the table type is:
 
@@ -163,19 +192,27 @@ A dictionary is a JSON object with following properties:
 + `description` : An optional description of the dictionary.
 + `delimiterChar` : Defines the delimiter character of the CSV format. Default value is `,`.
 + `quoteChar` : Defines the quote character of the CSV format. Default value is `"`.
++ `lineBreaks` : Defines the valid line breaking strings of the CSV format. Default value is `\r\n` and `\n`.
++ `skipFirstRows` : Defines the number of rows to skip at the beginning of the CSV file.
++ `skipEmptyRows` : Specifies whether empty rows should be ignored. Empty rows are rows in which each column has an empty value.
++ `language` : Defines the content language of the CSV format. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. Can be overriden by the language tag of a column.
 + `keys` : An array of key definitions. **This property is REQUIRED**.
+
+This object MAY be extended.
 
 #### Keys
 
 The `keys` array describes all keys within a CSV dictionary. A key is a JSON object with following properties:
 
-+ `name` : The name of the key. **This property is REQUIRED**.
-+ `description` : An optional description of the key.
++ `code` : The code of the key. **This property is REQUIRED**.
++ `name` : The human-readable name of the key. 
++ `alternativeNames` : A list of alternative names of the column.
++ `description` : An human-readable description of the key.
 + `type` : The data type of the key. **This property is REQUIRED**. Possible values are:
     + `string`
-    + `int`
-    + `float`
-    + `bool`
+    + `integer`
+    + `numeric`
+    + `boolean`
     + `enum`
     + `enum-set`
     + `time`
@@ -185,41 +222,105 @@ The `keys` array describes all keys within a CSV dictionary. A key is a JSON obj
     + `xml`
 + `optional` : If `true` the key must not be present in the CSV dictionary. Default value is `false`. 
 + `nullable` : If `true` the value of this key can be empty. Default value is `false`.
-+ `pattern` : An optional regular expression which must always match with the value of the key.
++ `nullValues`: If `nullable=true` the list of values that represent the null state.
+
+### Table Sets
+
+#### TableSet
+
+A table set is a JSON object with following properties:
+
++ `name` : Defines the name of the CSV table set. **This property is REQUIRED**.
++ `description` : An optional human-readable description of the table set.
++ `delimiterChar` : Defines the delimiter character of the CSV format. Default value is `,`.
++ `quoteChar` : Defines the quote character of the CSV format. Default value is `"`.
++ `lineBreaks` : Defines the valid line breaking strings of the CSV format. Default value is `\r\n` and `\n`.
++ `skipFirstRows` : Defines the number of rows to skip at the beginning of the CSV file.
++ `skipEmptyRows` : Specifies whether empty rows should be ignored. Empty rows are rows in which each column has an empty value.
++ `language` : Defines the content language of the CSV format. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. Can be overriden by the language tag of a column.
++ `additionalColumns` : If `true` additional non-specified columns within the CSV document are allowed. Default value is `false`.
++ `tables` : An array of table definitions. **This property is REQUIRED**.
+
+This object MAY be extended.
+
+#### Tables
+
+The `tables` array describes all tables within a CSV table set. A table is a JSON object with following properties:
+
++ `name` : Defines the name of the table. **This property is REQUIRED**.
++ `description` : An optional human-readable description of the table.
++ `columns` : An array of column definitions. **This property is REQUIRED**.
+
+#### Columns
+
+The `columns` array describes all columns within a table of a CSV table set. A column is a JSON object with following properties:
+
++ `code` : The code of the column. **This property is REQUIRED**.
++ `name` : The human-readable name of the column.
++ `description` : An human-readable description of the column.
++ `type` : The data type of the column. **This property is REQUIRED**. Possible values are:
+    + `discriminator`
+    + `string`
+    + `integer`
+    + `numeric`
+    + `boolean`
+    + `enum`
+    + `enum-set`
+    + `time`
+    + `date`
+    + `date-time`
+    + `json`
+    + `xml`
++ `optional` : If `true` the column must not be present in the CSV table. Default value is `false`. 
++ `nullable` : If `true` values of this column can be empty. Default value is `false`.
++ `nullValues`: If `nullable=true` the list of values that represent the null state.
+
+A column of type `discriminator` MUST occur exactly once.
+
+#### Unique keys
+
+The `uniqueKeys` array describes unique keys within a CSV table set. A unique key is itself a JSON array with column codes representing an existing column. Each column code is a `string` value.
 
 ### Data types
 
 A data type defines the type of value which is expected in a column or key. Based on the data type additional schema properties are available:
 
+#### discriminator
+
+Represents a discriminator value for table sets. The following additional schema properties are available:
+
++ `values` : An array of value objects each representing one allowed value. **This property is REQUIRED**.
++ `language` : Defines the language of the content of the discriminator value. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. 
+
+This data type can only occur within table sets.
+
 #### string
 
 Represents a text string. The following additional schema properties are available:
 
-+ `format` : Specifies the expected format of a string value. Possible values are:
-    + `none` : Any string value. This is the default value.
-    + `uuid` : An uuid acccording to [rfc4122](https://datatracker.ietf.org/doc/html/rfc4122). 
-    + `uri` : An uri acccording to [rfc3986](https://datatracker.ietf.org/doc/html/rfc3986).
-    + `email` : An email address acccording to [rfc5322, section 3.4.1](https://datatracker.ietf.org/doc/html/rfc5322#section-3.4.1).
-    + `base64` : A base64 encoded string acccording to [rfc4648](https://datatracker.ietf.org/doc/html/rfc4648). 
 + `minLength` : Specifies the minimum character length of a string value.
 + `maxLength` : Specifies the maximun character length of a string value.
++ `language` : Defines the language of the content of the string value. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. 
++ `pattern` : An optional regular expression which must always match with the string value.
 
-#### int
+#### integer
 
 Represents an integral number. The following additional schema properties are available:
 
 + `minValue` : Specifies the minimum allowed value.
 + `maxValue` : Specifies the maximun allowed value.
 
-#### float
+#### numeric
 
 Represents a floating number. The following additional schema properties are available:
 
 + `formats` : An array of valid format string according to [.NET Custom numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings). **This property is REQUIRED**.
 + `minValue` : Specifies the minimum allowed value.
 + `maxValue` : Specifies the maximun allowed value.
++ `exclusiveMinValue`: Specifies the exclusive lower limit for a value.
++ `exclusiveMaxValue`: Specifies the exclusive upper limit for a value.
 
-#### bool
+#### boolean
 
 Represents a boolean value. The following additional schema properties are available:
 
@@ -231,6 +332,7 @@ Represents a boolean value. The following additional schema properties are avail
 Represents an enumeration value. The following additional schema properties are available:
 
 + `members` : An array of value objects each representing one enumeration value. **This property is REQUIRED**.
++ `language` : Defines the language of the content of the member value. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. 
 
 #### enum-set
 
@@ -239,6 +341,7 @@ Represents an set of enumeration values formatted as csv string. The following a
 + `members` : An array of value objects each repesenting one enumeration value. **This property is REQUIRED**.
 + `delimiterChar` : Defines the delimiter character of the CSV string format. Default value is `,`.
 + `quoteChar` : Defines the quote character of the CSV string format. Default value is `"`.
++ `language` : Defines the language of the content of the member value. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. 
 
 #### date-time
 
@@ -277,3 +380,21 @@ Represents a xml formatted string. The following additional schema properties ar
 
 + `schema` : Specifies a [XML Schema](https://www.w3.org/TR/xmlschema-0/). **This property is REQUIRED**.
     + `uri` : An uri to a valid XML Schema. **This property is REQUIRED**.
+
+### Extension of the Specification
+
+The CSV Table Schema specification can be extended with additional data at certain points.
+
+The properties of these extensions are implemented as free fields, which must always be prefixed with `x-` (e.g., `x-external-id`). The value can be a string, a number, a boolean value, null, an object, or an array.
+
+The extensions may or may not be supported by the available tools. Ideally, these tools can be extended to add the desired support (e.g., in Open Source projects).
+
+Example:
+
+``` json
+"table": {
+  "name": "Subjects.csv",
+  "type": "unordered",
+  "x-origin": "https://www.example.com"
+}
+```
