@@ -139,7 +139,7 @@ A table is a JSON object with following properties:
 + `lineBreaks` : Defines the valid line breaking strings of the CSV format. Default value is `\r\n` and `\n`.
 + `skipFirstRows` : Defines the number of rows to skip at the beginning of the CSV file.
 + `skipEmptyRows` : Specifies whether empty rows should be ignored. Empty rows are rows in which each column has an empty value.
-+ `language` : Defines the content language of the CSV format. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. Can be overriden by the language tag of a column.
++ `language` : Defines the content language of the CSV format. This MUST be an [IETF BCP 47 language tag](https://www.rfc-editor.org/rfc/bcp/bcp47.txt). Can be overriden by the language tag of a column.
 + `additionalColumns` : If `true` additional non-specified columns within the CSV document are allowed. Default value is `false`.
 + `columns` : An array of column definitions. **This property is REQUIRED**.
 
@@ -195,7 +195,7 @@ A dictionary is a JSON object with following properties:
 + `lineBreaks` : Defines the valid line breaking strings of the CSV format. Default value is `\r\n` and `\n`.
 + `skipFirstRows` : Defines the number of rows to skip at the beginning of the CSV file.
 + `skipEmptyRows` : Specifies whether empty rows should be ignored. Empty rows are rows in which each column has an empty value.
-+ `language` : Defines the content language of the CSV format. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. Can be overriden by the language tag of a column.
++ `language` : Defines the content language of the CSV format. This MUST be an [IETF BCP 47 language tag](https://www.rfc-editor.org/rfc/bcp/bcp47.txt). Can be overriden by the language tag of a column.
 + `keys` : An array of key definitions. **This property is REQUIRED**.
 
 This object MAY be extended.
@@ -237,7 +237,7 @@ A table set is a JSON object with following properties:
 + `lineBreaks` : Defines the valid line breaking strings of the CSV format. Default value is `\r\n` and `\n`.
 + `skipFirstRows` : Defines the number of rows to skip at the beginning of the CSV file.
 + `skipEmptyRows` : Specifies whether empty rows should be ignored. Empty rows are rows in which each column has an empty value.
-+ `language` : Defines the content language of the CSV format. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. Can be overriden by the language tag of a column.
++ `language` : Defines the content language of the CSV format. This MUST be an [IETF BCP 47 language tag](https://www.rfc-editor.org/rfc/bcp/bcp47.txt). Can be overriden by the language tag of a column.
 + `additionalColumns` : If `true` additional non-specified columns within the CSV document are allowed. Default value is `false`.
 + `tables` : An array of table definitions. **This property is REQUIRED**.
 
@@ -290,7 +290,7 @@ A data type defines the type of value which is expected in a column or key. Base
 Represents a discriminator value for table sets. The following additional schema properties are available:
 
 + `values` : An array of value objects each representing one allowed value. **This property is REQUIRED**.
-+ `language` : Defines the language of the content of the discriminator value. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. 
++ `language` : Defines the language of the content of the discriminator value. This MUST be an [IETF BCP 47 language tag](https://www.rfc-editor.org/rfc/bcp/bcp47.txt). 
 
 This data type can only occur within table sets.
 
@@ -300,7 +300,7 @@ Represents a text string. The following additional schema properties are availab
 
 + `minLength` : Specifies the minimum character length of a string value.
 + `maxLength` : Specifies the maximun character length of a string value.
-+ `language` : Defines the language of the content of the string value. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. 
++ `language` : Defines the language of the content of the string value. This MUST be an [IETF BCP 47 language tag](https://www.rfc-editor.org/rfc/bcp/bcp47.txt). 
 + `pattern` : An optional regular expression which must always match with the string value.
 
 #### integer
@@ -332,7 +332,7 @@ Represents a boolean value. The following additional schema properties are avail
 Represents an enumeration value. The following additional schema properties are available:
 
 + `members` : An array of value objects each representing one enumeration value. **This property is REQUIRED**.
-+ `language` : Defines the language of the content of the member value. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. 
++ `language` : Defines the language of the content of the member value. This MUST be an [IETF BCP 47 language tag](https://www.rfc-editor.org/rfc/bcp/bcp47.txt). 
 
 #### enum-set
 
@@ -341,7 +341,7 @@ Represents an set of enumeration values formatted as csv string. The following a
 + `members` : An array of value objects each repesenting one enumeration value. **This property is REQUIRED**.
 + `delimiterChar` : Defines the delimiter character of the CSV string format. Default value is `,`.
 + `quoteChar` : Defines the quote character of the CSV string format. Default value is `"`.
-+ `language` : Defines the language of the content of the member value. The value MUST be language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. 
++ `language` : Defines the language of the content of the member value. This MUST be an [IETF BCP 47 language tag](https://www.rfc-editor.org/rfc/bcp/bcp47.txt). 
 
 #### date-time
 
@@ -371,7 +371,7 @@ Represents a time only value. The following additional schema properties are ava
 
 Represents a json formatted string. The following additional schema properties are available:
 
-+ `schema` : Specifies a [JSON Schema](https://json-schema.org/draft/2020-12/json-schema-core.html). **This property is REQUIRED**.
++ `schema` : Specifies a [JSON Schema](https://json-schema.org). **This property is REQUIRED**.
     + `uri` : An uri to a valid JSON Schema. **This property is REQUIRED**.
 
 #### xml
