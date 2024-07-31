@@ -11,7 +11,7 @@
         "description": "List of countries",
         "columns": [
           {
-            "code": "country",
+            "id": "country",
             "description": "Discriminator for country row",
             "type": "discriminator",
             "values": [
@@ -21,12 +21,12 @@
             ]
           },
           {
-            "code": "name",
+            "id": "name",
             "description": "Name of the country",
             "type": "string"
           },
           {
-            "code": "continent",
+            "id": "continent",
             "description": "Name of the continent",
             "type": "string"
           }
@@ -36,7 +36,7 @@
         "description": "List of continents",
         "columns": [
           {
-            "code": "continent",
+            "id": "continent",
             "description": "Discriminator for continent row",
             "type": "discriminator",
             "values": [
@@ -46,7 +46,7 @@
             ]
           },
           {
-            "code": "name",
+            "id": "name",
             "description": "Name of the continent",
             "type": "string"
           }

@@ -9,19 +9,19 @@
     "language": "en",
     "columns": [
       {
-        "code": "id",
+        "id": "id",
         "name": "Id",
         "description": "Unique id",
         "type": "string"
       },
       {
-        "code": "shortName",
+        "id": "shortName",
         "name": "ShortName",
         "description": "Short name of subject",
         "type": "string"
       },
       {
-        "code": "longName",
+        "id": "longName",
         "name": "LongName",
         "description": "Long name of subject",
         "type": "string"

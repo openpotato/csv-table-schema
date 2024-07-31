@@ -9,19 +9,19 @@
     "language": "en",
     "columns": [
       {
-        "code": "id",
+        "id": "id",
         "name": "Id",
         "description": "Unique id",
         "type": "string"
       },
       {
-        "code": "title",
+        "id": "title",
         "name": "Title",
         "description": "Course title",
         "type": "string"
       },
       {
-        "code": "startDate",
+        "id": "startDate",
         "name": "StartDate",
         "description": "Start date of the course",
         "type": "date-time",
@@ -30,7 +30,7 @@
         ]
       },
       {
-        "code": "endDate",
+        "id": "endDate",
         "name": "EndDate",
         "description": "End date of the course",
         "type": "date-time",
@@ -39,7 +39,7 @@
         ]
       },
       {
-        "code": "subjectId",
+        "id": "subjectId",
         "name": "SubjectId",
         "description": "Reference to subject (see sample02c.csv-schema.json)",
         "type": "string"

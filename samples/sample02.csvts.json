@@ -8,11 +8,13 @@
     "language": "en",
     "keys": [
       {
+        "id": "timeZone",
         "name": "TimeZone",
         "description": "Time Zone according to http://web.cs.ucla.edu/~eggert/tz/tz-link.htm",
         "type": "string"
       },
       {
+        "id": "validFrom",
         "name": "ValidFrom",
         "description": "Start date of validity",
         "type": "date",
@@ -21,6 +23,7 @@
         ]
       },
       {
+        "id": "validTo",
         "name": "ValidTo",
         "description": "End date of validity",
         "type": "date",

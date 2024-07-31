@@ -171,12 +171,12 @@
           "minItems": 1,
           "items": {
             "type": "array",
-            "description": "An array of column codes as unique key definition",
+            "description": "An array of column IDs as unique key definition",
             "unqiueItems": true,
             "minItems": 1,
             "items": {
               "type": "string",
-              "description": "A column code."
+              "description": "A column ID."
             }
           }
         }
@@ -436,12 +436,12 @@
                 "minItems": 1,
                 "items": {
                   "type": "array",
-                  "description": "An array of column codes as unique key definition",
+                  "description": "An array of column IDs as unique key definition",
                   "unqiueItems": true,
                   "minItems": 1,
                   "items": {
                     "type": "string",
-                    "description": "A column code."
+                    "description": "A column ID."
                   }
                 }
               }
@@ -468,14 +468,14 @@
     "discriminatorType": {
       "description": "This is an discriminator type column.",
       "required": [
-        "code",
+        "id",
         "type",
         "values"
       ],
       "properties": {
-        "code": {
+        "id": {
           "type": "string",
-          "description": "The code of the CSV column or key."
+          "description": "The ID of the CSV column or key."
         },
         "name": {
           "type": "string",
@@ -520,13 +520,13 @@
     "stringType": {
       "description": "This is a string type column or key.",
       "required": [
-        "code",
+        "id",
         "type"
       ],
       "properties": {
-        "code": {
+        "id": {
           "type": "string",
-          "description": "The code of the CSV column or key."
+          "description": "The ID of the CSV column or key."
         },
         "name": {
           "type": "string",
@@ -589,14 +589,14 @@
     "enumType": {
       "description": "This is an enumeration type column or key.",
       "required": [
-        "code",
+        "id",
         "type",
         "members"
       ],
       "properties": {
-        "code": {
+        "id": {
           "type": "string",
-          "description": "The code of the CSV column or key."
+          "description": "The ID of the CSV column or key."
         },
         "name": {
           "type": "string",
@@ -667,14 +667,14 @@
     "enumSetType": {
       "description": "This is an enumeration set type column or key. The set of values is formatted as csv string.",
       "required": [
-        "code",
+        "id",
         "type",
         "members"
       ],
       "properties": {
-        "code": {
+        "id": {
           "type": "string",
-          "description": "The code of the CSV column or key."
+          "description": "The ID of the CSV column or key."
         },
         "name": {
           "type": "string",
@@ -759,13 +759,13 @@
     "integerType": {
       "description": "This is a integer type column or key.",
       "required": [
-        "code",
+        "id",
         "type"
       ],
       "properties": {
-        "code": {
+        "id": {
           "type": "string",
-          "description": "The code of the CSV column or key."
+          "description": "The ID of the CSV column or key."
         },
         "name": {
           "type": "string",
@@ -819,14 +819,14 @@
     "numericType": {
       "description": "This is a numeric type column or key.",
       "required": [
-        "code",
+        "id",
         "type",
         "formats"
       ],
       "properties": {
-        "code": {
+        "id": {
           "type": "string",
-          "description": "The code of the CSV column or key."
+          "description": "The ID of the CSV column or key."
         },
         "name": {
           "type": "string",
@@ -895,15 +895,15 @@
     "booleanType": {
       "description": "This is a boolean type column or key.",
       "required": [
-        "code",
+        "id",
         "type",
         "trueValues",
         "falseValues"
       ],
       "properties": {
-        "code": {
+        "id": {
           "type": "string",
-          "description": "The code of the CSV column or key."
+          "description": "The ID of the CSV column or key."
         },
         "name": {
           "type": "string",
@@ -963,14 +963,14 @@
     "dateType": {
       "description": "This is a date only type column or key.",
       "required": [
-        "code",
+        "id",
         "type",
         "formats"
       ],
       "properties": {
-        "code": {
+        "id": {
           "type": "string",
-          "description": "The code of the CSV column or key."
+          "description": "The ID of the CSV column or key."
         },
         "name": {
           "type": "string",
@@ -1031,14 +1031,14 @@
     "timeType": {
       "description": "This is a time only type column or key.",
       "required": [
-        "code",
+        "id",
         "type",
         "formats"
       ],
       "properties": {
-        "code": {
+        "id": {
           "type": "string",
-          "description": "The code of the CSV column or key."
+          "description": "The ID of the CSV column or key."
         },
         "name": {
           "type": "string",
@@ -1099,14 +1099,14 @@
     "dateTimeType": {
       "description": "This is a date-time type column or key.",
       "required": [
-        "code",
+        "id",
         "type",
         "formats"
       ],
       "properties": {
-        "code": {
+        "id": {
           "type": "string",
-          "description": "The code of the CSV column or key."
+          "description": "The ID of the CSV column or key."
         },
         "name": {
           "type": "string",
@@ -1167,14 +1167,14 @@
     "jsonType": {
       "description": "This is a json formatted string type column or key.",
       "required": [
-        "code",
+        "id",
         "type",
         "schema"
       ],
       "properties": {
-        "code": {
+        "id": {
           "type": "string",
-          "description": "The code of the CSV column or key."
+          "description": "The ID of the CSV column or key."
         },
         "name": {
           "type": "string",
@@ -1235,14 +1235,14 @@
     "xmlType": {
       "description": "This is a xml formatted string type column or key.",
       "required": [
-        "code",
+        "id",
         "type",
         "schema"
       ],
       "properties": {
-        "code": {
+        "id": {
           "type": "string",
-          "description": "The code of the CSV column or key."
+          "description": "The ID of the CSV column or key."
         },
         "name": {
           "type": "string",

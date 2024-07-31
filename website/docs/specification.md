@@ -149,7 +149,7 @@ This object MAY be extended.
 
 The `columns` array describes all columns within a CSV table. A column is a JSON object with following properties:
 
-+ `code` : The code of the column. **This property is REQUIRED**.
++ `id` : The ID of the column. **This property is REQUIRED**.
 + `name` : The human-readable name of the column.
 + `alternativeNames` : A list of alternative names of the column.
 + `description` : An human-readable description of the column.
@@ -171,7 +171,7 @@ The `columns` array describes all columns within a CSV table. A column is a JSON
 
 #### Unique keys
 
-The `uniqueKeys` array describes unique keys within a CSV table. A unique key is itself a JSON array with column codes representing an existing column. Each column code is a `string` value.
+The `uniqueKeys` array describes unique keys within a CSV table. A unique key is itself a JSON array with column IDs representing an existing column. Each column ID is a `string` value.
 
 #### About optional columns
 
@@ -204,7 +204,7 @@ This object MAY be extended.
 
 The `keys` array describes all keys within a CSV dictionary. A key is a JSON object with following properties:
 
-+ `code` : The code of the key. **This property is REQUIRED**.
++ `id` : The ID of the key. **This property is REQUIRED**.
 + `name` : The human-readable name of the key. 
 + `alternativeNames` : A list of alternative names of the column.
 + `description` : An human-readable description of the key.
@@ -255,7 +255,7 @@ The `tables` array describes all tables within a CSV table set. A table is a JSO
 
 The `columns` array describes all columns within a table of a CSV table set. A column is a JSON object with following properties:
 
-+ `code` : The code of the column. **This property is REQUIRED**.
++ `id` : The ID of the column. **This property is REQUIRED**.
 + `name` : The human-readable name of the column.
 + `description` : An human-readable description of the column.
 + `type` : The data type of the column. **This property is REQUIRED**. Possible values are:
@@ -279,7 +279,7 @@ A column of type `discriminator` MUST occur exactly once.
 
 #### Unique keys
 
-The `uniqueKeys` array describes unique keys within a CSV table set. A unique key is itself a JSON array with column codes representing an existing column. Each column code is a `string` value.
+The `uniqueKeys` array describes unique keys within a CSV table set. A unique key is itself a JSON array with column IDs representing an existing column. Each column ID is a `string` value.
 
 ### Data types
 
