@@ -1,72 +1,53 @@
 {
-  "version": "0.2",
-  "title": "CSV Table Schema for students",
-  "description": "A sample CSV Table Schema for students",
+  "$schema": "https://schemahub.openpotato.org/csv-table-schema/v0.1/schema.json",
+  "version": "0.3",
+  "title": "CSV Table Schema for courses",
+  "description": "A sample CSV Table Schema for courses",
   "table": {
-    "name": "Students.csv",
+    "name": "Courses.csv",
     "type": "unordered",
+    "language": "en",
     "columns": [
       {
+        "code": "id",
         "name": "Id",
         "description": "Unique id",
-        "type": "string",
-        "format": "uuid"
-      },
-      {
-        "name": "LastName",
-        "description": "Last name of the student",
         "type": "string"
       },
       {
-        "name": "FirstName",
-        "description": "First name of the student",
+        "code": "title",
+        "name": "Title",
+        "description": "Course title",
         "type": "string"
       },
       {
-        "name": "Gender",
-        "description": "Gender of the student",
-        "type": "enum",
-        "members": [
-          {
-            "value": "M",
-            "description": "Male"
-          },
-          {
-            "value": "F",
-            "description": "Female"
-          },
-          {
-            "value": "D",
-            "description": "Diverse"
-          }
-        ],
-        "optional": true,
-        "nullable": true
-      },
-      {
-        "name": "Birthdate",
-        "description": "Birthdate of the student",
-        "type": "date",
+        "code": "startDate",
+        "name": "StartDate",
+        "description": "Start date of the course",
+        "type": "date-time",
         "formats": [
           "yyyy-MM-dd"
-        ],
-        "optional": true,
-        "nullable": true
+        ]
       },
       {
-        "name": "CourseList",
-        "description": "Array of course (see sample01b.scsv.json) references ",
-        "type": "json",
-        "schema": {
-          "uri": "json-id-array.json"
-        },
-        "optional": true,
-        "nullable": true
+        "code": "endDate",
+        "name": "EndDate",
+        "description": "End date of the course",
+        "type": "date-time",
+        "formats": [
+          "yyyy-MM-dd"
+        ]
+      },
+      {
+        "code": "subjectId",
+        "name": "SubjectId",
+        "description": "Reference to subject (see sample02c.csv-schema.json)",
+        "type": "string"
       }
     ],
-    "unqiueKeys": [
+    "uniqueKeys": [
       [
-        "Id"
+        "id"
       ]
     ]
   }

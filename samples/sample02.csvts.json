@@ -1,9 +1,11 @@
 {
-  "version": "0.2",
+  "$schema": "https://schemahub.openpotato.org/csv-table-schema/v0.1/schema.json",
+  "version": "0.3",
   "title": "CSV Table Schema for configuration",
   "description": "A sample CSV Table Schema for configuration data",
   "dictionary": {
     "name": "Configuration.csv",
+    "language": "en",
     "keys": [
       {
         "name": "TimeZone",
@@ -26,11 +28,6 @@
           "yyyy-MM-dd"
         ]
       }
-    ],
-    "unqiueKeys": [
-      [
-        "Id"
-      ]
     ]
   }
 }

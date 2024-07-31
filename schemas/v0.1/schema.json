@@ -1,14 +1,39 @@
 ﻿{
-  "$id": "https://github.com/openpotato/csv-table-schema/main/schemas/v0.1/schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$comment": "v-0.0.5",
+  "$id": "https://schemahub.openpotato.org/csv-table-schema/v0.1/schema.json",
+  "$comment": "v-0.1.0",
   "title": "JSON CSV Table Schema Specification",
-  "description": "CSV Table Schema Specification v-0.0.x based on JSON Schema",
+  "description": "CSV Table Schema Specification v-0.1.x based on JSON Schema",
   "type": "object",
   "required": [
     "title"
   ],
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "table"
+      ]
+    },
+    {
+      "type": "object",
+      "required": [
+        "dictionary"
+      ]
+    },
+    {
+      "type": "object",
+      "required": [
+        "tableSet"
+      ]
+    }
+  ],
   "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "The used dialect of the CSV schema. Can be used to verify that the schema is valid.",
+      "format": "uri"
+    },
     "version": {
       "type": "string",
       "description": "The version of the CSV schema."
@@ -19,11 +44,15 @@
     },
     "description": {
       "type": "string",
-      "description": "A short description of the CSV schema."
+      "description": "A short human-readable description of this CSV schema."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional human-readable notes for this CSV schema."
     },
     "table": {
       "type": "object",
-      "description": "The CSV table definition.",
+      "description": "A CSV table definition.",
       "required": [
         "type",
         "columns"
@@ -35,7 +64,7 @@
         },
         "description": {
           "type": "string",
-          "description": "A short description of the CSV table."
+          "description": "A short human-readable description of the CSV table."
         },
         "type": {
           "enum": [
@@ -59,6 +88,33 @@
           "maxLength": 1,
           "default": "\""
         },
+        "lineBreaks": {
+          "type": "array",
+          "description": "Valid line break strings.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "\r\n",
+            "\n"
+          ]
+        },
+        "skipFirstRows": {
+          "type": "integer",
+          "description": "The number of rows to skip at the beginning of the CSV file.",
+          "minValue": 0,
+          "default": 0
+        },
+        "skipEmptyRows": {
+          "type": "boolean",
+          "description": "Specifies whether empty rows should be ignored. Empty rows are rows in which each column has an empty value.",
+          "default": false
+        },
+        "language": {
+          "description": "A language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. Can be overriden by the language tag of a column.",
+          "type": "string"
+        },
         "additionalColumns": {
           "type": "boolean",
           "description": "A boolean that specifies whether additional columns are allowed.",
@@ -73,635 +129,68 @@
             "type": "object",
             "anyOf": [
               {
-                "description": "This is a string type column.",
-                "required": [
-                  "name",
-                  "type"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the CSV column."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the CSV column."
-                  },
-                  "type": {
-                    "const": "string",
-                    "description": "The type keyword of the CSV column."
-                  },
-                  "format": {
-                    "enum": [
-                      "none",
-                      "uuid",
-                      "uri",
-                      "email",
-                      "base64"
-                    ],
-                    "description": "Supported formats for this type: `none` (any value), `uuid` (https://datatracker.ietf.org/doc/html/rfc3986), `uri` (https://datatracker.ietf.org/doc/html/rfc4122), `email` (https://datatracker.ietf.org/doc/html/rfc5322#section-3.4.1) and `base64` (https://datatracker.ietf.org/doc/html/rfc4648).",
-                    "default": "none"
-                  },
-                  "minLength": {
-                    "type": "integer",
-                    "description": "An integer that specifies the minimum character length of the value."
-                  },
-                  "maxLength": {
-                    "type": "integer",
-                    "description": "An integer that specifies the maximum character length of the value."
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the column can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/stringType"
               },
               {
-                "description": "This is an enumeration type column.",
-                "required": [
-                  "name",
-                  "type",
-                  "members"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the CSV column."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the CSV column."
-                  },
-                  "type": {
-                    "const": "enum",
-                    "description": "The type keyword of the CSV column."
-                  },
-                  "members": {
-                    "type": "array",
-                    "description": "The list of allowed values for this enumeration.",
-                    "minItems": 1,
-                    "items": {
-                      "type": "object",
-                      "required": [
-                        "value"
-                      ],
-                      "properties": {
-                        "value": {
-                          "type": "string",
-                          "description": "The value string."
-                        },
-                        "description": {
-                          "type": "string",
-                          "description": "A short description of the value."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the column can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/enumType"
               },
               {
-                "description": "This is an enumeration set type column. The set of values is formatted as csv string.",
-                "required": [
-                  "name",
-                  "type",
-                  "members"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the CSV column."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the CSV column."
-                  },
-                  "type": {
-                    "const": "enum-set",
-                    "description": "The type keyword of the CSV column."
-                  },
-                  "delimiterChar": {
-                    "type": "string",
-                    "description": "Delimiter character.",
-                    "default": ",",
-                    "minLength": 1,
-                    "maxLength": 1
-                  },
-                  "quoteChar": {
-                    "type": "string",
-                    "description": "Quote character.",
-                    "default": "\"",
-                    "minLength": 1,
-                    "maxLength": 1
-                  },
-                  "members": {
-                    "type": "array",
-                    "description": "The list of allowed values for the enumeration set.",
-                    "minItems": 1,
-                    "items": {
-                      "type": "object",
-                      "required": [
-                        "value"
-                      ],
-                      "properties": {
-                        "value": {
-                          "type": "string",
-                          "description": "The value string."
-                        },
-                        "description": {
-                          "type": "string",
-                          "description": "A short description of the value."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the column can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/enumSetType"
               },
               {
-                "description": "This is a integer type column.",
-                "required": [
-                  "name",
-                  "type"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the CSV column."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the CSV column."
-                  },
-                  "type": {
-                    "const": "int",
-                    "description": "The type keyword of the CSV column."
-                  },
-                  "minValue": {
-                    "type": "string",
-                    "description": "An string that specifies the minimum allowed value."
-                  },
-                  "maxValue": {
-                    "type": "string",
-                    "description": "An string that specifies the maximum allowed value."
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the column can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/integerType"
               },
               {
-                "description": "This is a float type column.",
-                "required": [
-                  "name",
-                  "type",
-                  "formats"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the CSV column."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the CSV column."
-                  },
-                  "type": {
-                    "const": "float",
-                    "description": "The type keyword of the CSV column."
-                  },
-                  "formats": {
-                    "type": "array",
-                    "description": "List of valid format strings according to https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings.",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "minValue": {
-                    "type": "string",
-                    "description": "An string that specifies the minimum allowed value."
-                  },
-                  "maxValue": {
-                    "type": "string",
-                    "description": "An string that specifies the maximum allowed value."
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the column can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/numericType"
               },
               {
-                "description": "This is a boolean type column.",
-                "required": [
-                  "name",
-                  "type",
-                  "trueValues",
-                  "falseValues"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the CSV column."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the CSV column."
-                  },
-                  "type": {
-                    "const": "bool",
-                    "description": "The type keyword of the CSV column."
-                  },
-                  "trueValues": {
-                    "type": "array",
-                    "description": "The list of allowed values for column type enum.",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "falseValues": {
-                    "type": "array",
-                    "description": "The list of allowed values for column type enum.",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the column can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/booleanType"
               },
               {
-                "description": "This is a date only type column.",
-                "required": [
-                  "name",
-                  "type",
-                  "formats"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the CSV column."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the CSV column."
-                  },
-                  "type": {
-                    "const": "date",
-                    "description": "The type keyword of the CSV column."
-                  },
-                  "formats": {
-                    "type": "array",
-                    "description": "List of valid format strings according to https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings.",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "minValue": {
-                    "type": "string",
-                    "description": "An string that specifies the minimum allowed value."
-                  },
-                  "maxValue": {
-                    "type": "string",
-                    "description": "An string that specifies the maximum allowed value."
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the column can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/dateType"
               },
               {
-                "description": "This is a time only type column.",
-                "required": [
-                  "name",
-                  "type",
-                  "formats"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the CSV column."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the CSV column."
-                  },
-                  "type": {
-                    "const": "time",
-                    "description": "The type keyword of the CSV column."
-                  },
-                  "formats": {
-                    "type": "array",
-                    "description": "List of valid format strings according to https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings.",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "minValue": {
-                    "type": "string",
-                    "description": "An string that specifies the minimum allowed value."
-                  },
-                  "maxValue": {
-                    "type": "string",
-                    "description": "An string that specifies the maximum allowed value."
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the column can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                }
+                "$ref": "#/$defs/timeType"
               },
               {
-                "description": "This is a date-time type column.",
-                "required": [
-                  "name",
-                  "type",
-                  "formats"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the CSV column."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the CSV column."
-                  },
-                  "type": {
-                    "const": "date-time",
-                    "description": "The data type of the CSV column."
-                  },
-                  "formats": {
-                    "type": "array",
-                    "description": "List of valid format strings according to https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings.",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "minValue": {
-                    "type": "string",
-                    "description": "An string that specifies the minimum allowed value."
-                  },
-                  "maxValue": {
-                    "type": "string",
-                    "description": "An string that specifies the maximum allowed value."
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the column can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/dateTimeType"
               },
               {
-                "description": "This is a json formatted string type column.",
-                "required": [
-                  "name",
-                  "type",
-                  "schema"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the CSV column."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the CSV column."
-                  },
-                  "type": {
-                    "const": "json",
-                    "description": "The type keyword of the CSV column."
-                  },
-                  "schema": {
-                    "type": "object",
-                    "description": "The JSON schema.",
-                    "required": [
-                      "uri"
-                    ],
-                    "properties": {
-                      "uri": {
-                        "type": "string",
-                        "description": "Uri to the JSON schema file.",
-                        "format": "uri-reference"
-                      }
-                    }
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the column can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/jsonType"
               },
               {
-                "description": "This is a xml formatted string type column.",
-                "required": [
-                  "name",
-                  "type",
-                  "schema"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the CSV column."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the CSV column."
-                  },
-                  "type": {
-                    "const": "xml",
-                    "description": "The type keyword of the CSV column."
-                  },
-                  "schema": {
-                    "type": "object",
-                    "description": "The JSON schema.",
-                    "required": [
-                      "uri"
-                    ],
-                    "properties": {
-                      "uri": {
-                        "type": "string",
-                        "description": "Uri to the XML schema file.",
-                        "format": "uri-reference"
-                      }
-                    }
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the column can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/xmlType"
               }
             ]
           }
         },
-        "unqiueKeys": {
+        "uniqueKeys": {
           "type": "array",
           "description": "An array of unique key definitions.",
           "unqiueItems": true,
           "minItems": 1,
-          "items": [
-            {
-              "type": "array",
-              "description": "An array of column names as unique key definition",
-              "unqiueItems": true,
-              "minItems": 1,
-              "items": [
-                {
-                  "type": "string",
-                  "description": "Name of column."
-                }
-              ]
+          "items": {
+            "type": "array",
+            "description": "An array of column codes as unique key definition",
+            "unqiueItems": true,
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "description": "A column code."
             }
-          ]
+          }
+        }
+      },
+      "patternProperties": {
+        "^x-": {
+          "$ref": "#/$defs/customExtension"
         }
       },
       "additionalProperties": false
     },
     "dictionary": {
       "type": "object",
-      "description": "The CSV dictionary definition.",
+      "description": "A CSV dictionary definition.",
       "required": [
         "keys"
       ],
@@ -712,7 +201,7 @@
         },
         "description": {
           "type": "string",
-          "description": "A short description of the CSV dictionary."
+          "description": "A short human-readable description of the CSV dictionary."
         },
         "delimiterChar": {
           "type": "string",
@@ -728,6 +217,33 @@
           "maxLength": 1,
           "default": "\""
         },
+        "lineBreaks": {
+          "type": "array",
+          "description": "Valid line break strings.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "\r\n",
+            "\n"
+          ]
+        },
+        "skipFirstRows": {
+          "type": "integer",
+          "description": "The number of rows to skip at the beginning of the CSV file.",
+          "minValue": 0,
+          "default": 0
+        },
+        "skipEmptyRows": {
+          "type": "boolean",
+          "description": "Specifies whether empty rows should be ignored. Empty rows are rows in which each column has an empty value.",
+          "default": false
+        },
+        "language": {
+          "description": "A language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. Can be overriden by the language tag of a key.",
+          "type": "string"
+        },
         "keys": {
           "type": "array",
           "description": "A list of dictionary keys.",
@@ -737,626 +253,1057 @@
             "type": "object",
             "anyOf": [
               {
-                "description": "This is a string type key.",
-                "required": [
-                  "name",
-                  "type"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the dictionary key."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the dictionary key."
-                  },
-                  "type": {
-                    "const": "string",
-                    "description": "The type keyword of the dictionary key value."
-                  },
-                  "format": {
-                    "enum": [
-                      "none",
-                      "uuid",
-                      "uri",
-                      "email",
-                      "base64"
-                    ],
-                    "description": "Supported formats for this type: `none` (any value), `uuid` (https://datatracker.ietf.org/doc/html/rfc3986), `uri` (https://datatracker.ietf.org/doc/html/rfc4122), `email` (https://datatracker.ietf.org/doc/html/rfc5322#section-3.4.1) and `base64` (https://datatracker.ietf.org/doc/html/rfc4648).",
-                    "default": "none"
-                  },
-                  "minLength": {
-                    "type": "integer",
-                    "description": "An integer that specifies the minimum character length of the value."
-                  },
-                  "maxLength": {
-                    "type": "integer",
-                    "description": "An integer that specifies the maximum character length of the value."
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the key can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/stringType"
               },
               {
-                "description": "This is an enumeration type key.",
-                "required": [
-                  "name",
-                  "type",
-                  "members"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the dictionary key."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the dictionary key."
-                  },
-                  "type": {
-                    "const": "enum",
-                    "description": "The type keyword of the dictionary key value."
-                  },
-                  "members": {
-                    "type": "array",
-                    "description": "The list of allowed values for this enumeration.",
-                    "minItems": 1,
-                    "items": {
-                      "type": "object",
-                      "required": [
-                        "value"
-                      ],
-                      "properties": {
-                        "value": {
-                          "type": "string",
-                          "description": "The value string."
-                        },
-                        "description": {
-                          "type": "string",
-                          "description": "A short description of the value."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the key can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/enumType"
               },
               {
-                "description": "This is an enumeration set type key. The set of values is formatted as csv string.",
-                "required": [
-                  "name",
-                  "type",
-                  "members"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the dictionary key."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the dictionary key."
-                  },
-                  "type": {
-                    "const": "enum-set",
-                    "description": "The type keyword of the dictionary key value."
-                  },
-                  "delimiterChar": {
-                    "type": "string",
-                    "description": "Delimiter character.",
-                    "default": ",",
-                    "minLength": 1,
-                    "maxLength": 1
-                  },
-                  "quoteChar": {
-                    "type": "string",
-                    "description": "Quote character.",
-                    "default": "\"",
-                    "minLength": 1,
-                    "maxLength": 1
-                  },
-                  "members": {
-                    "type": "array",
-                    "description": "The list of allowed values for the enumeration set.",
-                    "minItems": 1,
-                    "items": {
-                      "type": "object",
-                      "required": [
-                        "value"
-                      ],
-                      "properties": {
-                        "value": {
-                          "type": "string",
-                          "description": "The value string."
-                        },
-                        "description": {
-                          "type": "string",
-                          "description": "A short description of the value."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the key can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/enumSetType"
               },
               {
-                "description": "This is a integer type key.",
-                "required": [
-                  "name",
-                  "type"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the dictionary key."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the dictionary key."
-                  },
-                  "type": {
-                    "const": "int",
-                    "description": "The type keyword of the dictionary key value."
-                  },
-                  "minValue": {
-                    "type": "string",
-                    "description": "An string that specifies the minimum allowed value."
-                  },
-                  "maxValue": {
-                    "type": "string",
-                    "description": "An string that specifies the maximum allowed value."
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the key can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/integerType"
               },
               {
-                "description": "This is a float type key.",
-                "required": [
-                  "name",
-                  "type",
-                  "formats"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the dictionary key."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the dictionary key."
-                  },
-                  "type": {
-                    "const": "float",
-                    "description": "The type keyword of the dictionary key value."
-                  },
-                  "formats": {
-                    "type": "array",
-                    "description": "List of valid format strings according to https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings.",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "minValue": {
-                    "type": "string",
-                    "description": "An string that specifies the minimum allowed value."
-                  },
-                  "maxValue": {
-                    "type": "string",
-                    "description": "An string that specifies the maximum allowed value."
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the key can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/numericType"
               },
               {
-                "description": "This is a boolean type key.",
-                "required": [
-                  "name",
-                  "type",
-                  "trueValues",
-                  "falseValues"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the dictionary key."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the dictionary key."
-                  },
-                  "type": {
-                    "const": "bool",
-                    "description": "The type keyword of the dictionary key value."
-                  },
-                  "trueValues": {
-                    "type": "array",
-                    "description": "The list of allowed values for key type enum.",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "falseValues": {
-                    "type": "array",
-                    "description": "The list of allowed values for key type enum.",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the key can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/booleanType"
               },
               {
-                "description": "This is a date only type key.",
-                "required": [
-                  "name",
-                  "type",
-                  "formats"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the dictionary key."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the dictionary key."
-                  },
-                  "type": {
-                    "const": "date",
-                    "description": "The type keyword of the dictionary key value."
-                  },
-                  "formats": {
-                    "type": "array",
-                    "description": "List of valid format strings according to https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings.",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "minValue": {
-                    "type": "string",
-                    "description": "An string that specifies the minimum allowed value."
-                  },
-                  "maxValue": {
-                    "type": "string",
-                    "description": "An string that specifies the maximum allowed value."
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the key can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/dateType"
               },
               {
-                "description": "This is a time only type key.",
-                "required": [
-                  "name",
-                  "type",
-                  "formats"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the dictionary key."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the dictionary key."
-                  },
-                  "type": {
-                    "const": "time",
-                    "description": "The type keyword of the dictionary key value."
-                  },
-                  "formats": {
-                    "type": "array",
-                    "description": "List of valid format strings according to https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings.",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "minValue": {
-                    "type": "string",
-                    "description": "An string that specifies the minimum allowed value."
-                  },
-                  "maxValue": {
-                    "type": "string",
-                    "description": "An string that specifies the maximum allowed value."
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the key can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/timeType"
               },
               {
-                "description": "This is a date-time type key.",
-                "required": [
-                  "name",
-                  "type",
-                  "formats"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the dictionary key."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the dictionary key."
-                  },
-                  "type": {
-                    "const": "date-time",
-                    "description": "The type keyword of the dictionary key value."
-                  },
-                  "formats": {
-                    "type": "array",
-                    "description": "List of valid format strings according to https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings.",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "minValue": {
-                    "type": "string",
-                    "description": "An string that specifies the minimum allowed value."
-                  },
-                  "maxValue": {
-                    "type": "string",
-                    "description": "An string that specifies the maximum allowed value."
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the key can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/dateTimeType"
               },
               {
-                "description": "This is a json formatted string type key.",
-                "required": [
-                  "name",
-                  "type",
-                  "schema"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the dictionary key."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the dictionary key."
-                  },
-                  "type": {
-                    "const": "json",
-                    "description": "The type keyword of the dictionary key value."
-                  },
-                  "schema": {
-                    "type": "object",
-                    "description": "The JSON schema.",
-                    "required": [
-                      "uri"
-                    ],
-                    "properties": {
-                      "uri": {
-                        "type": "string",
-                        "description": "Uri to the JSON schema file.",
-                        "format": "uri-reference"
-                      }
-                    }
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the key can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/$defs/jsonType"
               },
               {
-                "description": "This is a xml formatted string type key.",
-                "required": [
-                  "name",
-                  "type",
-                  "schema"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the dictionary key."
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "A short description of the dictionary key."
-                  },
-                  "type": {
-                    "const": "xml",
-                    "description": "The type keyword of the dictionary key value."
-                  },
-                  "schema": {
-                    "type": "object",
-                    "description": "The JSON schema.",
-                    "required": [
-                      "uri"
-                    ],
-                    "properties": {
-                      "uri": {
-                        "type": "string",
-                        "description": "Uri to the XML schema file.",
-                        "format": "uri-reference"
-                      }
-                    }
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the value can be empty.",
-                    "default": false
-                  },
-                  "optional": {
-                    "type": "boolean",
-                    "description": "A boolean that specifies whether the key can be omitted. See remarks for headless tables in documentation.",
-                    "default": false
-                  },
-                  "pattern": {
-                    "type": "string",
-                    "description": "A string that specifies a regular expression that must mach against each value.",
-                    "format": "regex"
-                  }
-                }
+                "$ref": "#/$defs/xmlType"
               }
             ]
           }
         }
       },
+      "patternProperties": {
+        "^x-": {
+          "$ref": "#/$defs/customExtension"
+        }
+      },
+      "additionalProperties": false
+    },
+    "tableSet": {
+      "type": "object",
+      "description": "A CSV polymorphic table definition.",
+      "required": [
+        "tables"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV polymorphic table."
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable description of the CSV polymorphic table."
+        },
+        "delimiterChar": {
+          "type": "string",
+          "description": "Delimiter character.",
+          "minLength": 1,
+          "maxLength": 1,
+          "default": ","
+        },
+        "quoteChar": {
+          "type": "string",
+          "description": "Quote character.",
+          "minLength": 1,
+          "maxLength": 1,
+          "default": "\""
+        },
+        "lineBreaks": {
+          "type": "array",
+          "description": "Valid line break strings.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "\r\n",
+            "\n"
+          ]
+        },
+        "skipFirstRows": {
+          "type": "integer",
+          "description": "The number of rows to skip at the beginning of the CSV file.",
+          "minValue": 0,
+          "default": 0
+        },
+        "skipEmptyRows": {
+          "type": "boolean",
+          "description": "Specifies whether empty rows should be ignored. Empty rows are rows in which each column, with the exception of the discriminator column, has an empty value.",
+          "default": false
+        },
+        "language": {
+          "description": "A language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content. Can be overriden by the language tag of a column.",
+          "type": "string"
+        },
+        "additionalColumns": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether additional columns are allowed.",
+          "default": false
+        },
+        "tables": {
+          "type": "array",
+          "description": "A list of different CSV tables.",
+          "unqiueItems": true,
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "description": "A CSV row type definition.",
+            "required": [
+              "columns"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The name of the embedded CSV table."
+              },
+              "description": {
+                "type": "string",
+                "description": "A short human-readable description of the embedded CSV table."
+              },
+              "columns": {
+                "type": "array",
+                "description": "A list of CSV columns.",
+                "unqiueItems": true,
+                "minItems": 1,
+                "contains": {
+                  "$ref": "#/$defs/discriminatorType"
+                },
+                "minContains": 1,
+                "maxContains": 1,
+                "items": {
+                  "type": "object",
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/discriminatorType"
+                    },
+                    {
+                      "$ref": "#/$defs/stringType"
+                    },
+                    {
+                      "$ref": "#/$defs/enumType"
+                    },
+                    {
+                      "$ref": "#/$defs/enumSetType"
+                    },
+                    {
+                      "$ref": "#/$defs/integerType"
+                    },
+                    {
+                      "$ref": "#/$defs/numericType"
+                    },
+                    {
+                      "$ref": "#/$defs/booleanType"
+                    },
+                    {
+                      "$ref": "#/$defs/dateType"
+                    },
+                    {
+                      "$ref": "#/$defs/timeType"
+                    },
+                    {
+                      "$ref": "#/$defs/dateTimeType"
+                    },
+                    {
+                      "$ref": "#/$defs/jsonType"
+                    },
+                    {
+                      "$ref": "#/$defs/xmlType"
+                    }
+                  ]
+                }
+              },
+              "uniqueKeys": {
+                "type": "array",
+                "description": "An array of unique key definitions.",
+                "unqiueItems": true,
+                "minItems": 1,
+                "items": {
+                  "type": "array",
+                  "description": "An array of column codes as unique key definition",
+                  "unqiueItems": true,
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "description": "A column code."
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "patternProperties": {
+        "^x-": {
+          "$ref": "#/$defs/customExtension"
+        }
+      },
       "additionalProperties": false
     }
   },
-  "oneOf": [
-    {
-      "type": "object",
-      "required": [
-        "table"
-      ]
-    },
-    {
-      "type": "object",
-      "required": [
-        "dictionary"
-      ]
+  "patternProperties": {
+    "^x-": {
+      "$ref": "#/$defs/customExtension"
     }
-  ],
-  "additionalProperties": false
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "discriminatorType": {
+      "description": "This is an discriminator type column.",
+      "required": [
+        "code",
+        "type",
+        "values"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the CSV column or key."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV column."
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable  description of the CSV column."
+        },
+        "type": {
+          "const": "discriminator",
+          "description": "The type keyword of the CSV column."
+        },
+        "values": {
+          "type": "array",
+          "description": "The list of allowed values for this discriminator.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "type": "string",
+                "description": "The value string."
+              },
+              "description": {
+                "type": "string",
+                "description": "A short human-readable description of the value."
+              }
+            }
+          }
+        },
+        "language": {
+          "description": "A language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "stringType": {
+      "description": "This is a string type column or key.",
+      "required": [
+        "code",
+        "type"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the CSV column or key."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV column or key."
+        },
+        "alternativeNames": {
+          "type": "array",
+          "description": "List of alternative names.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable description of the CSV column or key."
+        },
+        "type": {
+          "const": "string",
+          "description": "The type keyword of the CSV column or key."
+        },
+        "minLength": {
+          "type": "integer",
+          "description": "An integer that specifies the minimum character length of the value."
+        },
+        "maxLength": {
+          "type": "integer",
+          "description": "An integer that specifies the maximum character length of the value."
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the value can be empty.",
+          "default": false
+        },
+        "nullValues": {
+          "type": "array",
+          "description": "List of values that represent the null state.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the column or key can be omitted. See remarks for headless tables in documentation.",
+          "default": false
+        },
+        "language": {
+          "description": "A language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content.",
+          "type": "string"
+        },
+        "pattern": {
+          "type": "string",
+          "description": "A string that specifies a regular expression that must mach against each value.",
+          "format": "regex"
+        }
+      },
+      "additionalProperties": false
+    },
+    "enumType": {
+      "description": "This is an enumeration type column or key.",
+      "required": [
+        "code",
+        "type",
+        "members"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the CSV column or key."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV column or key."
+        },
+        "alternativeNames": {
+          "type": "array",
+          "description": "List of alternative names.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable description of the CSV column or key."
+        },
+        "type": {
+          "const": "enum",
+          "description": "The type keyword of the CSV column or key."
+        },
+        "members": {
+          "type": "array",
+          "description": "The list of allowed values for this enumeration.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "type": "string",
+                "description": "The value string."
+              },
+              "description": {
+                "type": "string",
+                "description": "A short human-readable description of the value."
+              }
+            }
+          }
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the value can be empty.",
+          "default": false
+        },
+        "nullValues": {
+          "type": "array",
+          "description": "List of values that represent the null state.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the column or key can be omitted. See remarks for headless tables in documentation.",
+          "default": false
+        },
+        "language": {
+          "description": "A language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "enumSetType": {
+      "description": "This is an enumeration set type column or key. The set of values is formatted as csv string.",
+      "required": [
+        "code",
+        "type",
+        "members"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the CSV column or key."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV column or key."
+        },
+        "alternativeNames": {
+          "type": "array",
+          "description": "List of alternative names.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable description of the CSV column or key."
+        },
+        "type": {
+          "const": "enum-set",
+          "description": "The type keyword of the CSV column or key."
+        },
+        "delimiterChar": {
+          "type": "string",
+          "description": "Delimiter character.",
+          "default": ",",
+          "minLength": 1,
+          "maxLength": 1
+        },
+        "quoteChar": {
+          "type": "string",
+          "description": "Quote character.",
+          "default": "\"",
+          "minLength": 1,
+          "maxLength": 1
+        },
+        "members": {
+          "type": "array",
+          "description": "The list of allowed values for the enumeration set.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "type": "string",
+                "description": "The value string."
+              },
+              "description": {
+                "type": "string",
+                "description": "A short human-readable description of the value."
+              }
+            }
+          }
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the value can be empty.",
+          "default": false
+        },
+        "nullValues": {
+          "type": "array",
+          "description": "List of values that represent the null state.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the column or key can be omitted. See remarks for headless tables in documentation.",
+          "default": false
+        },
+        "language": {
+          "description": "A language tag according to https://www.rfc-editor.org/rfc/bcp/bcp47.txt to specify the language of the content.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "integerType": {
+      "description": "This is a integer type column or key.",
+      "required": [
+        "code",
+        "type"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the CSV column or key."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV column or key."
+        },
+        "alternativeNames": {
+          "type": "array",
+          "description": "List of alternative names.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable description of the CSV column or key."
+        },
+        "type": {
+          "const": "integer",
+          "description": "The type keyword of the CSV column or key."
+        },
+        "minValue": {
+          "type": "string",
+          "description": "An string that specifies the minimum allowed value."
+        },
+        "maxValue": {
+          "type": "string",
+          "description": "An string that specifies the maximum allowed value."
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the value can be empty.",
+          "default": false
+        },
+        "nullValues": {
+          "type": "array",
+          "description": "List of values that represent the null state.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the column or key can be omitted. See remarks for headless tables in documentation.",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "numericType": {
+      "description": "This is a numeric type column or key.",
+      "required": [
+        "code",
+        "type",
+        "formats"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the CSV column or key."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV column or key."
+        },
+        "alternativeNames": {
+          "type": "array",
+          "description": "List of alternative names.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable description of the CSV column or key."
+        },
+        "type": {
+          "const": "numeric",
+          "description": "The type keyword of the CSV column or key."
+        },
+        "formats": {
+          "type": "array",
+          "description": "List of valid format strings according to https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "minValue": {
+          "type": "string",
+          "description": "An string that specifies the minimum allowed value."
+        },
+        "exclusiveMinValue": {
+          "type": "string",
+          "description": "An string that specifies the representing an exclusive lower limit for a value."
+        },
+        "maxValue": {
+          "type": "string",
+          "description": "An string that specifies the maximum allowed value."
+        },
+        "exclusiveMaxValue": {
+          "type": "string",
+          "description": "An string that specifies the representing an exclusive upper limit for a value."
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the value can be empty.",
+          "default": false
+        },
+        "nullValues": {
+          "type": "array",
+          "description": "List of values that represent the null state.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the column or key can be omitted. See remarks for headless tables in documentation.",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "booleanType": {
+      "description": "This is a boolean type column or key.",
+      "required": [
+        "code",
+        "type",
+        "trueValues",
+        "falseValues"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the CSV column or key."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV column or key."
+        },
+        "alternativeNames": {
+          "type": "array",
+          "description": "List of alternative names.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable description of the CSV column or key."
+        },
+        "type": {
+          "const": "boolean",
+          "description": "The type keyword of the CSV column or key."
+        },
+        "trueValues": {
+          "type": "array",
+          "description": "The list of allowed `true` values.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "falseValues": {
+          "type": "array",
+          "description": "The list of allowed `false` values.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the value can be empty.",
+          "default": false
+        },
+        "nullValues": {
+          "type": "array",
+          "description": "List of values that represent the null state.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the column or key can be omitted. See remarks for headless tables in documentation.",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "dateType": {
+      "description": "This is a date only type column or key.",
+      "required": [
+        "code",
+        "type",
+        "formats"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the CSV column or key."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV column or key."
+        },
+        "alternativeNames": {
+          "type": "array",
+          "description": "List of alternative names.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable description of the CSV column or key."
+        },
+        "type": {
+          "const": "date",
+          "description": "The type keyword of the CSV column or key."
+        },
+        "formats": {
+          "type": "array",
+          "description": "List of valid format strings according to https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "minValue": {
+          "type": "string",
+          "description": "An string that specifies the minimum allowed value."
+        },
+        "maxValue": {
+          "type": "string",
+          "description": "An string that specifies the maximum allowed value."
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the value can be empty.",
+          "default": false
+        },
+        "nullValues": {
+          "type": "array",
+          "description": "List of values that represent the null state.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the column or key can be omitted. See remarks for headless tables in documentation.",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "timeType": {
+      "description": "This is a time only type column or key.",
+      "required": [
+        "code",
+        "type",
+        "formats"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the CSV column or key."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV column or key."
+        },
+        "alternativeNames": {
+          "type": "array",
+          "description": "List of alternative names.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable description of the CSV column or key."
+        },
+        "type": {
+          "const": "time",
+          "description": "The type keyword of the CSV column or key."
+        },
+        "formats": {
+          "type": "array",
+          "description": "List of valid format strings according to https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "minValue": {
+          "type": "string",
+          "description": "An string that specifies the minimum allowed value."
+        },
+        "maxValue": {
+          "type": "string",
+          "description": "An string that specifies the maximum allowed value."
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the value can be empty.",
+          "default": false
+        },
+        "nullValues": {
+          "type": "array",
+          "description": "List of values that represent the null state.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the column or key can be omitted. See remarks for headless tables in documentation.",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "dateTimeType": {
+      "description": "This is a date-time type column or key.",
+      "required": [
+        "code",
+        "type",
+        "formats"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the CSV column or key."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV column or key."
+        },
+        "alternativeNames": {
+          "type": "array",
+          "description": "List of alternative names.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable description of the CSV column or key."
+        },
+        "type": {
+          "const": "date-time",
+          "description": "The data type of the CSV column or key."
+        },
+        "formats": {
+          "type": "array",
+          "description": "List of valid format strings according to https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "minValue": {
+          "type": "string",
+          "description": "An string that specifies the minimum allowed value."
+        },
+        "maxValue": {
+          "type": "string",
+          "description": "An string that specifies the maximum allowed value."
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the value can be empty.",
+          "default": false
+        },
+        "nullValues": {
+          "type": "array",
+          "description": "List of values that represent the null state.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the column or key can be omitted. See remarks for headless tables in documentation.",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "jsonType": {
+      "description": "This is a json formatted string type column or key.",
+      "required": [
+        "code",
+        "type",
+        "schema"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the CSV column or key."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV column or key."
+        },
+        "alternativeNames": {
+          "type": "array",
+          "description": "List of alternative names.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable description of the CSV column or key."
+        },
+        "type": {
+          "const": "json",
+          "description": "The type keyword of the CSV column or key."
+        },
+        "schema": {
+          "type": "object",
+          "description": "The JSON schema.",
+          "required": [
+            "uri"
+          ],
+          "properties": {
+            "uri": {
+              "type": "string",
+              "description": "Uri to the JSON schema file.",
+              "format": "uri-reference"
+            }
+          },
+          "additionalProperties": false
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the value can be empty.",
+          "default": false
+        },
+        "nullValues": {
+          "type": "array",
+          "description": "List of values that represent the null state.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the column or key can be omitted. See remarks for headless tables in documentation.",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "xmlType": {
+      "description": "This is a xml formatted string type column or key.",
+      "required": [
+        "code",
+        "type",
+        "schema"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the CSV column or key."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the CSV column or key."
+        },
+        "alternativeNames": {
+          "type": "array",
+          "description": "List of alternative names.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A short human-readable description of the CSV column or key."
+        },
+        "type": {
+          "const": "xml",
+          "description": "The type keyword of the CSV column or key."
+        },
+        "schema": {
+          "type": "object",
+          "description": "The JSON schema.",
+          "required": [
+            "uri"
+          ],
+          "properties": {
+            "uri": {
+              "type": "string",
+              "description": "Uri to the XML schema file.",
+              "format": "uri-reference"
+            }
+          },
+          "additionalProperties": false
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the value can be empty.",
+          "default": false
+        },
+        "nullValues": {
+          "type": "array",
+          "description": "List of values that represent the null state.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether the column or key can be omitted. See remarks for headless tables in documentation.",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "customExtension": {
+      "description": "Any property starting with x- is valid.",
+      "additionalProperties": true,
+      "additionalItems": true
+    }
+  }
 }

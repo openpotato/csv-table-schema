@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schemahub.openpotato.org/csv-table-schema/v0.1/schema.json",
+  "version": "0.3",
+  "title": "CSV Table Schema for a polymorphic table",
+  "description": "A sample CSV Table Schema for polymorphic data",
+  "tableSet": {
+    "name": "tableset.csv",
+    "language": "en",
+    "tables": [
+      {
+        "description": "List of countries",
+        "columns": [
+          {
+            "code": "country",
+            "description": "Discriminator for country row",
+            "type": "discriminator",
+            "values": [
+              {
+                "value": "co"
+              }
+            ]
+          },
+          {
+            "code": "name",
+            "description": "Name of the country",
+            "type": "string"
+          },
+          {
+            "code": "continent",
+            "description": "Name of the continent",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "description": "List of continents",
+        "columns": [
+          {
+            "code": "continent",
+            "description": "Discriminator for continent row",
+            "type": "discriminator",
+            "values": [
+              {
+                "value": "cn"
+              }
+            ]
+          },
+          {
+            "code": "name",
+            "description": "Name of the continent",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  }
+}

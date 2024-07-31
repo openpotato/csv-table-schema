@@ -6,11 +6,12 @@ Main features:
 
 + Easy schema definiton via JSON which can be validated against the [CSV Table Meta Schema](https://github.com/openpotato/csv-table-schema/tree/main/schemas/v0.1/schema.json).
 + Dedicated to the CSV format.
-+ Supports the following data types: string, enum, enum-set, bool, int, float, date, time, date-time, json and xml.
++ Supports the following data types: string, enum, enum-set, boolean, integer, numeric, date, time, date-time, json and xml.
 + Supports CSV tables with ordered and unordered columns.
 + Supports CSV tables with or without header row.
-+ Supports CSV dictionaries with key/value rows.
 + Supports unique key definitions for CSV tables
++ Supports CSV dictionaries with key/value rows.
++ Supports polimorphic CSV tables with different row types, distinguished by a discriminator in the first column 
 
 ## Documentation
 

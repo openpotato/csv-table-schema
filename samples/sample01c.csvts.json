@@ -1,31 +1,35 @@
 {
-  "version": "0.2",
+  "$schema": "https://schemahub.openpotato.org/csv-table-schema/v0.1/schema.json",
+  "version": "0.3",
   "title": "CSV Table Schema for subjects",
   "description": "A sample CSV Table Schema for subjects",
   "table": {
     "name": "Subjects.csv",
     "type": "unordered",
+    "language": "en",
     "columns": [
       {
+        "code": "id",
         "name": "Id",
         "description": "Unique id",
-        "type": "string",
-        "format": "uuid"
+        "type": "string"
       },
       {
+        "code": "shortName",
         "name": "ShortName",
         "description": "Short name of subject",
         "type": "string"
       },
       {
+        "code": "longName",
         "name": "LongName",
         "description": "Long name of subject",
         "type": "string"
       }
     ],
-    "unqiueKeys": [
+    "uniqueKeys": [
       [
-        "Id"
+        "id"
       ]
     ]
   }
